@@ -6,12 +6,13 @@
 - The player can choose to 'Hold', which means that his ROUND score gets added to his GLBAL score. After that, it's the next player's turn
 - The first player to reach 100 points on GLOBAL score wins the game */
 
-let scores , roundScores, activePlayer;
+let scores , roundScores, activePlayer, gamePlaying;
 
 function init(){
   scores= [0,0];
   roundScores = 0;
   activePlayer = 0;
+  gamePlaying = true;
   //hide the dice for start game and set the score 0
   document.querySelector('.dice').style.display = 'none';
   document.getElementById('score-0').textContent = 0;
@@ -31,7 +32,8 @@ function init(){
 document.querySelector('.btn-new').addEventListener('click',init);
 
 document.querySelector('.btn-roll').addEventListener('click', function(){
-  //1. random number
+  if(gamePlaying){
+    //1. random number
   let dice = Math.floor(Math.random()*6)+1;
 
   //2. display result
@@ -49,11 +51,13 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
        //next player
         nextPlayer();
      }
+  }
 })
 
 
 document.querySelector('.btn-hold').addEventListener('click', function(){
-    //add current score to global score
+    if(gamePlaying){
+      //add current score to global score
     scores[activePlayer] += roundScores
     //update the ui
     document.querySelector('#score-'+activePlayer).textContent = scores[activePlayer];
@@ -61,14 +65,15 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
     if(scores[activePlayer]>=20){
       document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
       document.querySelector('.dice').style.display = 'none';
-      console.log(activePlayer)  
-      document.querySelector('.player-'+ activePlayer +'-panel').classList.remove('active');
       document.querySelector('.player-'+ activePlayer +'-panel').classList.add('winner');
-    
-    }
+      document.querySelector('.player-'+ activePlayer +'-panel').classList.remove('active');
+    gamePlaying = false;
+    }else{
     //nextplayer
     nextPlayer();
-})
+    }
+    }
+});
 
 function nextPlayer(){
   activePlayer === 0 ? activePlayer = 1 : activePlayer =0;
